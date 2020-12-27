@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useEffect } from "react";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import axios from "axios";
 
-function App() {
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+import HomePage from "./HomePage";
+import OtherComponent from "./OtherComponent";
+
+const App = () => {
+  useEffect(() => {
+    (async () => {
+      const fp = await FingerprintJS.load();
+      const result = await fp.get();
+      const visitorId = result.visitorId;
+      axios({
+        url: `http://localhost:5000/visit/${visitorId}`,
+        method: "get",
+      });
+    })();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={HomePage} />
+        <Route paht="/other_route" component={OtherComponent} />
+      </Switch>
+    </Router>
   );
-}
+};
 
 export default App;
